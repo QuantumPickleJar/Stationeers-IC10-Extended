@@ -165,99 +165,365 @@ namespace InGameTextEditor
             { "nav", DeviceCategory.Rocket }
         };
 
-        // LogicTypes grouped by device category
+        // === ALL LogicTypes from game's Assembly-CSharp.dll ===
+        // Extracted via ILSpy from Assets.Scripts.Objects.Motherboards.LogicType
+        private static readonly string[] AllLogicTypes = new[]
+        {
+            "None", "Power", "Open", "Mode", "Error", "Pressure", "Temperature",
+            "PressureExternal", "PressureInternal", "Activate", "Lock", "Charge", "Setting",
+            "Reagents", "RatioOxygen", "RatioCarbonDioxide", "RatioNitrogen", "RatioPollutant",
+            "RatioVolatiles", "RatioWater", "Horizontal", "Vertical", "SolarAngle", "Maximum",
+            "Ratio", "PowerPotential", "PowerActual", "Quantity", "On", "ImportQuantity",
+            "ImportSlotOccupant", "ExportQuantity", "ExportSlotOccupant", "RequiredPower",
+            "HorizontalRatio", "VerticalRatio", "PowerRequired", "Idle", "Color", "ElevatorSpeed",
+            "ElevatorLevel", "RecipeHash", "ExportSlotHash", "ImportSlotHash",
+            "PlantHealth1", "PlantHealth2", "PlantHealth3", "PlantHealth4",
+            "PlantGrowth1", "PlantGrowth2", "PlantGrowth3", "PlantGrowth4",
+            "PlantEfficiency1", "PlantEfficiency2", "PlantEfficiency3", "PlantEfficiency4",
+            "PlantHash1", "PlantHash2", "PlantHash3", "PlantHash4",
+            "RequestHash", "CompletionRatio", "ClearMemory", "ExportCount", "ImportCount",
+            "PowerGeneration", "TotalMoles", "Volume", "Plant", "Harvest", "Output",
+            "PressureSetting", "TemperatureSetting", "TemperatureExternal", "Filtration",
+            "AirRelease", "PositionX", "PositionY", "PositionZ", "VelocityMagnitude",
+            "VelocityRelativeX", "VelocityRelativeY", "VelocityRelativeZ", "RatioNitrousOxide",
+            "PrefabHash", "ForceWrite", "SignalStrength", "SignalID", "TargetX", "TargetY", "TargetZ",
+            "SettingInput", "SettingOutput", "CurrentResearchPodType", "ManualResearchRequiredPod",
+            "MineablesInVicinity", "MineablesInQueue", "NextWeatherEventTime", "Combustion", "Fuel",
+            "ReturnFuelCost", "CollectableGoods", "Time", "Bpm", "EnvironmentEfficiency",
+            "WorkingGasEfficiency", "PressureInput", "TemperatureInput",
+            "RatioOxygenInput", "RatioCarbonDioxideInput", "RatioNitrogenInput", "RatioPollutantInput",
+            "RatioVolatilesInput", "RatioWaterInput", "RatioNitrousOxideInput", "TotalMolesInput",
+            "PressureInput2", "TemperatureInput2", "RatioOxygenInput2", "RatioCarbonDioxideInput2",
+            "RatioNitrogenInput2", "RatioPollutantInput2", "RatioVolatilesInput2", "RatioWaterInput2",
+            "RatioNitrousOxideInput2", "TotalMolesInput2", "PressureOutput", "TemperatureOutput",
+            "RatioOxygenOutput", "RatioCarbonDioxideOutput", "RatioNitrogenOutput", "RatioPollutantOutput",
+            "RatioVolatilesOutput", "RatioWaterOutput", "RatioNitrousOxideOutput", "TotalMolesOutput",
+            "PressureOutput2", "TemperatureOutput2", "RatioOxygenOutput2", "RatioCarbonDioxideOutput2",
+            "RatioNitrogenOutput2", "RatioPollutantOutput2", "RatioVolatilesOutput2", "RatioWaterOutput2",
+            "RatioNitrousOxideOutput2", "TotalMolesOutput2", "CombustionInput", "CombustionInput2",
+            "CombustionOutput", "CombustionOutput2", "OperationalTemperatureEfficiency",
+            "TemperatureDifferentialEfficiency", "PressureEfficiency", "CombustionLimiter", "Throttle",
+            "Rpm", "Stress", "InterrogationProgress", "TargetPadIndex", "SizeX", "SizeY", "SizeZ",
+            "MinimumWattsToContact", "WattsReachingContact", "Channel0", "Channel1", "Channel2",
+            "Channel3", "Channel4", "Channel5", "Channel6", "Channel7", "LineNumber", "Flush",
+            "SoundAlert", "SolarIrradiance", "RatioLiquidNitrogen", "RatioLiquidNitrogenInput",
+            "RatioLiquidNitrogenInput2", "RatioLiquidNitrogenOutput", "RatioLiquidNitrogenOutput2",
+            "VolumeOfLiquid", "RatioLiquidOxygen", "RatioLiquidOxygenInput", "RatioLiquidOxygenInput2",
+            "RatioLiquidOxygenOutput", "RatioLiquidOxygenOutput2", "RatioLiquidVolatiles",
+            "RatioLiquidVolatilesInput", "RatioLiquidVolatilesInput2", "RatioLiquidVolatilesOutput",
+            "RatioLiquidVolatilesOutput2", "RatioSteam", "RatioSteamInput", "RatioSteamInput2",
+            "RatioSteamOutput", "RatioSteamOutput2", "ContactTypeId", "RatioLiquidCarbonDioxide",
+            "RatioLiquidCarbonDioxideInput", "RatioLiquidCarbonDioxideInput2",
+            "RatioLiquidCarbonDioxideOutput", "RatioLiquidCarbonDioxideOutput2", "RatioLiquidPollutant",
+            "RatioLiquidPollutantInput", "RatioLiquidPollutantInput2", "RatioLiquidPollutantOutput",
+            "RatioLiquidPollutantOutput2", "RatioLiquidNitrousOxide", "RatioLiquidNitrousOxideInput",
+            "RatioLiquidNitrousOxideInput2", "RatioLiquidNitrousOxideOutput",
+            "RatioLiquidNitrousOxideOutput2", "Progress", "DestinationCode", "Acceleration", "ReferenceId",
+            "AutoShutOff", "Mass", "DryMass", "Thrust", "Weight", "ThrustToWeight", "TimeToDestination",
+            "BurnTimeRemaining", "AutoLand", "ForwardX", "ForwardY", "ForwardZ", "Orientation",
+            "VelocityX", "VelocityY", "VelocityZ", "PassedMoles", "ExhaustVelocity", "FlightControlRule",
+            "ReEntryAltitude", "Apex", "EntityState", "DrillCondition", "Index", "CelestialHash",
+            "AlignmentError", "DistanceAu", "OrbitPeriod", "Inclination", "Eccentricity", "SemiMajorAxis",
+            "DistanceKm", "CelestialParentHash", "TrueAnomaly", "RatioHydrogen", "RatioLiquidHydrogen",
+            "RatioPollutedWater", "Discover", "Chart", "Survey", "NavPoints", "ChartedNavPoints", "Sites",
+            "CurrentCode", "Density", "Richness", "Size", "TotalQuantity", "MinedQuantity",
+            "BestContactFilter", "NameHash", "Altitude", "TargetSlotIndex", "TargetPrefabHash", "Extended",
+            "NetworkFault", "ProportionalGain", "IntegralGain", "DerivativeGain", "Minimum", "Setpoint",
+            "Reset", "StackSize", "NextWeatherHash"
+        };
+
+        // === ALL LogicSlotTypes from game's Assembly-CSharp.dll ===
+        // Extracted via ILSpy from Assets.Scripts.Objects.Motherboards.LogicSlotType
+        private static readonly string[] AllSlotLogicTypes = new[]
+        {
+            "Occupied", "OccupantHash", "Quantity", "Damage", "Efficiency", "Health", "Growth",
+            "Pressure", "Temperature", "Charge", "ChargeRatio", "Class", "PressureWaste", "PressureAir",
+            "MaxQuantity", "Mature", "PrefabHash", "Seeding", "LineNumber", "Volume", "Open", "On",
+            "Lock", "SortingClass", "FilterType", "ReferenceId", "HarvestedHash", "Mode", "MaturityRatio",
+            "SeedingRatio", "FreeSlots", "TotalSlots"
+        };
+
+        // LogicTypes grouped by device category (curated for relevance)
         private static readonly Dictionary<DeviceCategory, string[]> CategoryLogicTypes = new Dictionary<DeviceCategory, string[]>
         {
             { DeviceCategory.GasSensor, new[] {
+                // Common
                 "Activate", "Error", "Lock", "Mode", "On", "Power", "PowerActual", "PowerRequired",
-                "Pressure", "RatioCarbonDioxide", "RatioNitrogen", "RatioNitrousOxide",
-                "RatioOxygen", "RatioPollutant", "RatioVolatiles", "RatioWater",
-                "Temperature", "TotalMoles", "PrefabHash", "ReferenceId"
+                "PrefabHash", "ReferenceId", "RequiredPower",
+                // Gas sensing
+                "Pressure", "Temperature", "TotalMoles", "Volume",
+                "RatioCarbonDioxide", "RatioNitrogen", "RatioNitrousOxide", "RatioOxygen",
+                "RatioPollutant", "RatioVolatiles", "RatioWater", "RatioHydrogen",
+                // Liquid ratios
+                "RatioLiquidCarbonDioxide", "RatioLiquidNitrogen", "RatioLiquidNitrousOxide",
+                "RatioLiquidOxygen", "RatioLiquidPollutant", "RatioLiquidVolatiles", "RatioLiquidHydrogen",
+                "RatioSteam", "RatioPollutedWater", "VolumeOfLiquid"
             }},
             
             { DeviceCategory.Display, new[] {
                 "Activate", "Color", "Error", "Lock", "Mode", "On", "Power", "PowerActual",
-                "PowerRequired", "Setting", "PrefabHash", "ReferenceId"
+                "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting"
             }},
             
             { DeviceCategory.Light, new[] {
                 "Activate", "Color", "Error", "Lock", "Mode", "On", "Power", "PowerActual",
-                "PowerRequired", "Setting", "PrefabHash", "ReferenceId"
+                "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting"
             }},
             
             { DeviceCategory.Vent, new[] {
-                "Activate", "Error", "Lock", "Mode", "On", "Open", "Power", "PowerActual",
-                "PowerRequired", "Pressure", "PressureExternal", "PressureInternal",
-                "PressureSetting", "Temperature", "TemperatureExternal", "PrefabHash", "ReferenceId"
+                "Activate", "AirRelease", "Error", "Lock", "Mode", "On", "Open", "Power",
+                "PowerActual", "PowerRequired", "PrefabHash", "Pressure", "PressureExternal",
+                "PressureInternal", "PressureSetting", "ReferenceId", "RequiredPower", "Setting",
+                "Temperature", "TemperatureExternal", "TemperatureSetting"
             }},
             
             { DeviceCategory.Pump, new[] {
+                // Common
                 "Activate", "Error", "Filtration", "Lock", "Mode", "On", "Power", "PowerActual",
-                "PowerRequired", "Pressure", "PressureInput", "PressureOutput", "PressureSetting",
+                "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting",
+                // Primary atmosphere
+                "Pressure", "PressureSetting", "Temperature", "TemperatureSetting", "TotalMoles", "Volume",
+                // Gas ratios
                 "RatioCarbonDioxide", "RatioNitrogen", "RatioNitrousOxide", "RatioOxygen",
-                "RatioPollutant", "RatioVolatiles", "RatioWater", "Setting", "Temperature",
-                "TemperatureInput", "TemperatureOutput", "TotalMoles", "TotalMolesInput",
-                "TotalMolesOutput", "Volume", "PrefabHash", "ReferenceId"
+                "RatioPollutant", "RatioVolatiles", "RatioWater", "RatioHydrogen",
+                // Input port
+                "PressureInput", "TemperatureInput", "TotalMolesInput",
+                "RatioCarbonDioxideInput", "RatioNitrogenInput", "RatioNitrousOxideInput",
+                "RatioOxygenInput", "RatioPollutantInput", "RatioVolatilesInput", "RatioWaterInput",
+                // Input port 2
+                "PressureInput2", "TemperatureInput2", "TotalMolesInput2",
+                "RatioCarbonDioxideInput2", "RatioNitrogenInput2", "RatioNitrousOxideInput2",
+                "RatioOxygenInput2", "RatioPollutantInput2", "RatioVolatilesInput2", "RatioWaterInput2",
+                // Output port
+                "PressureOutput", "TemperatureOutput", "TotalMolesOutput",
+                "RatioCarbonDioxideOutput", "RatioNitrogenOutput", "RatioNitrousOxideOutput",
+                "RatioOxygenOutput", "RatioPollutantOutput", "RatioVolatilesOutput", "RatioWaterOutput",
+                // Output port 2
+                "PressureOutput2", "TemperatureOutput2", "TotalMolesOutput2",
+                "RatioCarbonDioxideOutput2", "RatioNitrogenOutput2", "RatioNitrousOxideOutput2",
+                "RatioOxygenOutput2", "RatioPollutantOutput2", "RatioVolatilesOutput2", "RatioWaterOutput2",
+                // Liquid ratios
+                "RatioLiquidCarbonDioxide", "RatioLiquidNitrogen", "RatioLiquidNitrousOxide",
+                "RatioLiquidOxygen", "RatioLiquidPollutant", "RatioLiquidVolatiles",
+                "RatioLiquidCarbonDioxideInput", "RatioLiquidNitrogenInput", "RatioLiquidNitrousOxideInput",
+                "RatioLiquidOxygenInput", "RatioLiquidPollutantInput", "RatioLiquidVolatilesInput",
+                "RatioLiquidCarbonDioxideOutput", "RatioLiquidNitrogenOutput", "RatioLiquidNitrousOxideOutput",
+                "RatioLiquidOxygenOutput", "RatioLiquidPollutantOutput", "RatioLiquidVolatilesOutput",
+                "RatioSteam", "RatioSteamInput", "RatioSteamOutput", "VolumeOfLiquid",
+                // Efficiency
+                "EnvironmentEfficiency", "WorkingGasEfficiency", "OperationalTemperatureEfficiency",
+                "TemperatureDifferentialEfficiency", "PressureEfficiency"
             }},
             
             { DeviceCategory.Hydroponics, new[] {
-                "Activate", "Efficiency", "Error", "Harvest", "Lock", "On", "Plant", "Power",
-                "PowerActual", "PowerRequired", "Pressure", "Progress", "Seeding", "Temperature",
-                "PrefabHash", "ReferenceId"
+                // Device LogicTypes
+                "Activate", "Error", "Harvest", "Lock", "Mode", "On", "Plant", "Power", "PowerActual",
+                "PowerRequired", "PrefabHash", "Pressure", "ReferenceId", "RequiredPower", "Temperature",
+                // Per-slot plant data (1-4)
+                "PlantEfficiency1", "PlantEfficiency2", "PlantEfficiency3", "PlantEfficiency4",
+                "PlantGrowth1", "PlantGrowth2", "PlantGrowth3", "PlantGrowth4",
+                "PlantHash1", "PlantHash2", "PlantHash3", "PlantHash4",
+                "PlantHealth1", "PlantHealth2", "PlantHealth3", "PlantHealth4",
+                // Environment
+                "EnvironmentEfficiency",
+                // Slot LogicTypes (unique ones not already listed above)
+                "Charge", "ChargeRatio", "Class", "Damage", "Efficiency", "FilterType", "FreeSlots",
+                "Growth", "HarvestedHash", "Health", "Mature", "MaturityRatio", "MaxQuantity",
+                "OccupantHash", "Occupied", "Open", "Quantity", "Seeding", "SeedingRatio",
+                "SortingClass", "TotalSlots", "Volume"
             }},
             
             { DeviceCategory.Logic, new[] {
-                "Activate", "Channel", "Channel0", "Channel1", "Channel2", "Channel3",
-                "Error", "LineNumber", "Lock", "Mode", "On", "Power", "PowerActual",
-                "PowerRequired", "Setting", "PrefabHash", "ReferenceId"
+                // Common
+                "Activate", "Error", "Lock", "Mode", "On", "Power", "PowerActual", "PowerRequired",
+                "PrefabHash", "ReferenceId", "RequiredPower", "Setting",
+                // Channels
+                "Channel0", "Channel1", "Channel2", "Channel3", "Channel4", "Channel5", "Channel6", "Channel7",
+                // Memory/IC
+                "ClearMemory", "Flush", "LineNumber", "StackSize",
+                // Math unit
+                "SettingInput", "SettingOutput",
+                // Comparator/selector
+                "Minimum", "Maximum",
+                // PID controller
+                "ProportionalGain", "IntegralGain", "DerivativeGain", "Setpoint", "Reset",
+                // Networking
+                "SignalID", "SignalStrength"
             }},
             
             { DeviceCategory.Power, new[] {
-                "Activate", "Charge", "Error", "Horizontal", "Lock", "Maximum", "Mode", "On",
-                "Power", "PowerActual", "PowerGenerated", "PowerPotential", "PowerRequired",
-                "Ratio", "Setting", "SolarAngle", "SolarIrradiance", "Vertical", "PrefabHash", "ReferenceId"
+                // Common
+                "Activate", "Charge", "Error", "Lock", "Mode", "On", "Power", "PowerActual",
+                "PowerGeneration", "PowerPotential", "PowerRequired", "PrefabHash", "Ratio",
+                "ReferenceId", "RequiredPower", "Setting",
+                // Solar tracking
+                "Horizontal", "HorizontalRatio", "SolarAngle", "SolarIrradiance", "Vertical", "VerticalRatio",
+                // Battery
+                "Maximum",
+                // Generator
+                "Combustion", "CombustionInput", "CombustionInput2", "CombustionOutput", "CombustionOutput2",
+                "CombustionLimiter", "Fuel", "Rpm", "Throttle",
+                // Efficiency
+                "EnvironmentEfficiency", "OperationalTemperatureEfficiency", "TemperatureDifferentialEfficiency",
+                // APC/Transformer
+                "NetworkFault"
             }},
             
             { DeviceCategory.Fabricator, new[] {
-                "Activate", "Combustion", "CompletionRatio", "Error", "ExportCount", "Idle",
-                "ImportCount", "Lock", "Mode", "On", "Power", "PowerActual", "PowerRequired",
-                "Progress", "Quantity", "RecipeHash", "RequestHash", "RequiredPower",
-                "Temperature", "TemperatureSetting", "PrefabHash", "ReferenceId"
+                // Common
+                "Activate", "Error", "Idle", "Lock", "Mode", "On", "Power", "PowerActual",
+                "PowerRequired", "PrefabHash", "Progress", "ReferenceId", "RequiredPower",
+                // Recipe/production
+                "CompletionRatio", "Quantity", "RecipeHash", "RequestHash",
+                // Import/Export
+                "ExportCount", "ExportQuantity", "ExportSlotHash", "ExportSlotOccupant",
+                "ImportCount", "ImportQuantity", "ImportSlotHash", "ImportSlotOccupant",
+                // Temperature
+                "Temperature", "TemperatureSetting", "TemperatureInput", "TemperatureOutput",
+                // Combustion (furnace/smelter)
+                "Combustion", "CombustionInput", "CombustionInput2", "CombustionOutput", "CombustionOutput2",
+                // Pressure (centrifuge/electrolyzer)
+                "Pressure", "PressureInput", "PressureOutput", "PressureSetting",
+                // Efficiency
+                "EnvironmentEfficiency", "OperationalTemperatureEfficiency",
+                // Slot types for items
+                "Charge", "ChargeRatio", "Class", "Damage", "FreeSlots", "MaxQuantity",
+                "OccupantHash", "Occupied", "SortingClass", "TotalSlots"
             }},
             
             { DeviceCategory.Door, new[] {
                 "Activate", "Error", "Lock", "Mode", "On", "Open", "Power", "PowerActual",
-                "PowerRequired", "Setting", "PrefabHash", "ReferenceId"
+                "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting"
             }},
             
             { DeviceCategory.Console, new[] {
-                "Activate", "Channel", "Channel0", "Channel1", "Channel2", "Channel3",
-                "Color", "Error", "Lock", "Mode", "On", "Power", "PowerActual", "PowerRequired",
-                "Setting", "SignalID", "SignalStrength", "PrefabHash", "ReferenceId"
+                // Common
+                "Activate", "Color", "Error", "Lock", "Mode", "On", "Power", "PowerActual",
+                "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting",
+                // Channels
+                "Channel0", "Channel1", "Channel2", "Channel3", "Channel4", "Channel5", "Channel6", "Channel7",
+                // Satellite dish / GPS
+                "SignalID", "SignalStrength", "ContactTypeId", "BestContactFilter",
+                "MinimumWattsToContact", "WattsReachingContact", "TargetSlotIndex", "TargetPrefabHash",
+                // Research
+                "CurrentResearchPodType", "ManualResearchRequiredPod",
+                // Mining
+                "CollectableGoods", "MineablesInQueue", "MineablesInVicinity",
+                // Weather
+                "NextWeatherEventTime", "NextWeatherHash",
+                // Celestial tracking
+                "AlignmentError", "CelestialHash", "CelestialParentHash", "Chart", "ChartedNavPoints",
+                "CurrentCode", "Density", "DestinationCode", "Discover", "DistanceAu", "DistanceKm",
+                "Eccentricity", "Inclination", "MinedQuantity", "NavPoints", "OrbitPeriod", "Richness",
+                "SemiMajorAxis", "Sites", "Size", "Survey", "TotalQuantity", "TrueAnomaly"
             }},
             
             { DeviceCategory.Tank, new[] {
-                "Activate", "Error", "Lock", "On", "Pressure", "PressureInternal",
-                "RatioCarbonDioxide", "RatioNitrogen", "RatioNitrousOxide", "RatioOxygen",
-                "RatioPollutant", "RatioVolatiles", "RatioWater", "Temperature",
-                "TotalMoles", "Volume", "PrefabHash", "ReferenceId"
+                // Common
+                "Activate", "Error", "Lock", "On", "PrefabHash", "ReferenceId",
+                // Pressure/Temperature
+                "Pressure", "PressureInternal", "PressureExternal", "Temperature", "TotalMoles", "Volume",
+                // Gas ratios
+                "RatioCarbonDioxide", "RatioHydrogen", "RatioNitrogen", "RatioNitrousOxide",
+                "RatioOxygen", "RatioPollutant", "RatioVolatiles", "RatioWater",
+                // Liquid ratios
+                "RatioLiquidCarbonDioxide", "RatioLiquidHydrogen", "RatioLiquidNitrogen",
+                "RatioLiquidNitrousOxide", "RatioLiquidOxygen", "RatioLiquidPollutant",
+                "RatioLiquidVolatiles", "RatioPollutedWater", "RatioSteam", "VolumeOfLiquid"
             }},
             
             { DeviceCategory.Rocket, new[] {
-                "Activate", "Error", "ForceWrite", "Fuel", "Horizontal", "Lock", "Mode", "On",
-                "Power", "PowerActual", "PowerRequired", "PositionX", "PositionY", "PositionZ",
-                "ReturnFuelCost", "Setting", "TargetPadIndex", "TargetX", "TargetY", "TargetZ",
-                "Throttle", "VelocityMagnitude", "VelocityX", "VelocityY", "VelocityZ",
-                "Vertical", "PrefabHash", "ReferenceId"
+                // Common
+                "Activate", "Error", "Lock", "Mode", "On", "Power", "PowerActual", "PowerRequired",
+                "PrefabHash", "ReferenceId", "RequiredPower", "Setting",
+                // Position/Velocity
+                "Altitude", "ForwardX", "ForwardY", "ForwardZ", "Orientation",
+                "PositionX", "PositionY", "PositionZ",
+                "VelocityMagnitude", "VelocityRelativeX", "VelocityRelativeY", "VelocityRelativeZ",
+                "VelocityX", "VelocityY", "VelocityZ",
+                // Navigation
+                "Acceleration", "AlignmentError", "Apex", "AutoLand", "BurnTimeRemaining",
+                "DestinationCode", "FlightControlRule", "ReEntryAltitude", "TargetPadIndex",
+                "TargetX", "TargetY", "TargetZ", "TimeToDestination",
+                // Engine
+                "DryMass", "ExhaustVelocity", "ForceWrite", "Fuel", "Horizontal", "HorizontalRatio",
+                "Mass", "PassedMoles", "ReturnFuelCost", "Rpm", "Stress", "Throttle", "Thrust",
+                "ThrustToWeight", "Vertical", "VerticalRatio", "Weight",
+                // Status
+                "AutoShutOff", "DrillCondition", "EntityState", "Extended", "Index",
+                // Celestial
+                "CelestialHash", "CelestialParentHash", "DistanceAu", "DistanceKm",
+                "Eccentricity", "Inclination", "OrbitPeriod", "SemiMajorAxis", "TrueAnomaly"
             }},
             
             { DeviceCategory.Unknown, new[] {
-                // Common properties for unknown devices
-                "Activate", "Charge", "Class", "Color", "Damage", "Error", "Lock", "Mode",
-                "On", "Open", "Power", "PowerActual", "PowerRequired", "Pressure", "Setting",
-                "Temperature", "PrefabHash", "ReferenceId",
-                // Include ratio types as they're common
-                "RatioCarbonDioxide", "RatioNitrogen", "RatioOxygen", "RatioVolatiles", "RatioWater"
+                // Complete list of ALL LogicTypes for unknown devices
+                "Acceleration", "Activate", "AirRelease", "AlignmentError", "Altitude", "Apex",
+                "AutoLand", "AutoShutOff", "BestContactFilter", "Bpm", "BurnTimeRemaining",
+                "CelestialHash", "CelestialParentHash", "Channel0", "Channel1", "Channel2", "Channel3",
+                "Channel4", "Channel5", "Channel6", "Channel7", "Charge", "ChargeRatio", "Chart",
+                "ChartedNavPoints", "Class", "ClearMemory", "CollectableGoods", "Color", "Combustion",
+                "CombustionInput", "CombustionInput2", "CombustionLimiter", "CombustionOutput",
+                "CombustionOutput2", "CompletionRatio", "ContactTypeId", "CurrentCode",
+                "CurrentResearchPodType", "Damage", "Density", "DerivativeGain", "DestinationCode",
+                "Discover", "DistanceAu", "DistanceKm", "DrillCondition", "DryMass", "Eccentricity",
+                "Efficiency", "ElevatorLevel", "ElevatorSpeed", "EntityState", "EnvironmentEfficiency",
+                "Error", "ExhaustVelocity", "ExportCount", "ExportQuantity", "ExportSlotHash",
+                "ExportSlotOccupant", "Extended", "FilterType", "Filtration", "FlightControlRule",
+                "Flush", "ForceWrite", "ForwardX", "ForwardY", "ForwardZ", "FreeSlots", "Fuel",
+                "Growth", "HarvestedHash", "Health", "Horizontal", "HorizontalRatio", "Idle",
+                "ImportCount", "ImportQuantity", "ImportSlotHash", "ImportSlotOccupant", "Inclination",
+                "Index", "IntegralGain", "InterrogationProgress", "LineNumber", "Lock",
+                "ManualResearchRequiredPod", "Mass", "Mature", "MaturityRatio", "Maximum", "MaxQuantity",
+                "MinedQuantity", "MineablesInQueue", "MineablesInVicinity", "Minimum",
+                "MinimumWattsToContact", "Mode", "NameHash", "NavPoints", "NetworkFault",
+                "NextWeatherEventTime", "NextWeatherHash", "OccupantHash", "Occupied", "On", "Open",
+                "OperationalTemperatureEfficiency", "OrbitPeriod", "Orientation", "Output",
+                "PassedMoles", "Plant", "PlantEfficiency1", "PlantEfficiency2", "PlantEfficiency3",
+                "PlantEfficiency4", "PlantGrowth1", "PlantGrowth2", "PlantGrowth3", "PlantGrowth4",
+                "PlantHash1", "PlantHash2", "PlantHash3", "PlantHash4", "PlantHealth1", "PlantHealth2",
+                "PlantHealth3", "PlantHealth4", "PositionX", "PositionY", "PositionZ", "Power",
+                "PowerActual", "PowerGeneration", "PowerPotential", "PowerRequired", "PrefabHash",
+                "Pressure", "PressureAir", "PressureEfficiency", "PressureExternal", "PressureInput",
+                "PressureInput2", "PressureInternal", "PressureOutput", "PressureOutput2",
+                "PressureSetting", "PressureWaste", "Progress", "ProportionalGain", "Quantity", "Ratio",
+                "RatioCarbonDioxide", "RatioCarbonDioxideInput", "RatioCarbonDioxideInput2",
+                "RatioCarbonDioxideOutput", "RatioCarbonDioxideOutput2", "RatioHydrogen",
+                "RatioLiquidCarbonDioxide", "RatioLiquidCarbonDioxideInput",
+                "RatioLiquidCarbonDioxideInput2", "RatioLiquidCarbonDioxideOutput",
+                "RatioLiquidCarbonDioxideOutput2", "RatioLiquidHydrogen", "RatioLiquidNitrogen",
+                "RatioLiquidNitrogenInput", "RatioLiquidNitrogenInput2", "RatioLiquidNitrogenOutput",
+                "RatioLiquidNitrogenOutput2", "RatioLiquidNitrousOxide", "RatioLiquidNitrousOxideInput",
+                "RatioLiquidNitrousOxideInput2", "RatioLiquidNitrousOxideOutput",
+                "RatioLiquidNitrousOxideOutput2", "RatioLiquidOxygen", "RatioLiquidOxygenInput",
+                "RatioLiquidOxygenInput2", "RatioLiquidOxygenOutput", "RatioLiquidOxygenOutput2",
+                "RatioLiquidPollutant", "RatioLiquidPollutantInput", "RatioLiquidPollutantInput2",
+                "RatioLiquidPollutantOutput", "RatioLiquidPollutantOutput2", "RatioLiquidVolatiles",
+                "RatioLiquidVolatilesInput", "RatioLiquidVolatilesInput2", "RatioLiquidVolatilesOutput",
+                "RatioLiquidVolatilesOutput2", "RatioNitrogen", "RatioNitrogenInput",
+                "RatioNitrogenInput2", "RatioNitrogenOutput", "RatioNitrogenOutput2",
+                "RatioNitrousOxide", "RatioNitrousOxideInput", "RatioNitrousOxideInput2",
+                "RatioNitrousOxideOutput", "RatioNitrousOxideOutput2", "RatioOxygen", "RatioOxygenInput",
+                "RatioOxygenInput2", "RatioOxygenOutput", "RatioOxygenOutput2", "RatioPollutant",
+                "RatioPollutantInput", "RatioPollutantInput2", "RatioPollutantOutput",
+                "RatioPollutantOutput2", "RatioPollutedWater", "RatioSteam", "RatioSteamInput",
+                "RatioSteamInput2", "RatioSteamOutput", "RatioSteamOutput2", "RatioVolatiles",
+                "RatioVolatilesInput", "RatioVolatilesInput2", "RatioVolatilesOutput",
+                "RatioVolatilesOutput2", "RatioWater", "RatioWaterInput", "RatioWaterInput2",
+                "RatioWaterOutput", "RatioWaterOutput2", "Reagents", "RecipeHash", "ReferenceId",
+                "RequestHash", "RequiredPower", "Reset", "ReturnFuelCost", "Richness", "Rpm", "Seeding",
+                "SeedingRatio", "SemiMajorAxis", "Setpoint", "Setting", "SettingInput", "SettingOutput",
+                "SignalID", "SignalStrength", "Sites", "Size", "SizeX", "SizeY", "SizeZ", "SolarAngle",
+                "SolarIrradiance", "SortingClass", "SoundAlert", "StackSize", "Stress", "Survey",
+                "TargetPadIndex", "TargetPrefabHash", "TargetSlotIndex", "TargetX", "TargetY", "TargetZ",
+                "Temperature", "TemperatureDifferentialEfficiency", "TemperatureExternal",
+                "TemperatureInput", "TemperatureInput2", "TemperatureOutput", "TemperatureOutput2",
+                "TemperatureSetting", "Throttle", "Thrust", "ThrustToWeight", "Time", "TimeToDestination",
+                "TotalMoles", "TotalMolesInput", "TotalMolesInput2", "TotalMolesOutput",
+                "TotalMolesOutput2", "TotalQuantity", "TotalSlots", "TrueAnomaly", "VelocityMagnitude",
+                "VelocityRelativeX", "VelocityRelativeY", "VelocityRelativeZ", "VelocityX", "VelocityY",
+                "VelocityZ", "Vertical", "VerticalRatio", "Volume", "VolumeOfLiquid", "WattsReachingContact",
+                "Weight", "WorkingGasEfficiency", "Harvest"
             }}
         };
 
@@ -360,9 +626,11 @@ namespace InGameTextEditor
 
             // Get the device category for this alias
             _currentCategory = _aliasCategories.TryGetValue(tokenBeforeDot, out var cat) ? cat : DeviceCategory.Unknown;
+            Debug.Log($"[Autocomplete] '{tokenBeforeDot}' -> Category: {_currentCategory}");
 
             // Get LogicTypes for this category
             var logicTypes = CategoryLogicTypes.TryGetValue(_currentCategory, out var types) ? types : CategoryLogicTypes[DeviceCategory.Unknown];
+            Debug.Log($"[Autocomplete] Showing {logicTypes.Length} properties for {_currentCategory}");
 
             _mode = AutocompleteMode.Property;
             _currentFilter = "";
@@ -880,9 +1148,11 @@ namespace InGameTextEditor
             {
                 if (aliasName.IndexOf(kvp.Key, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
+                    Debug.Log($"[Autocomplete] Alias '{aliasName}' matched pattern '{kvp.Key}' -> {kvp.Value}");
                     return kvp.Value;
                 }
             }
+            Debug.Log($"[Autocomplete] Alias '{aliasName}' did not match any pattern, checking target: '{target}'");
 
             // Check target for IC.Device with known hash
             // Example: IC.Device[-815193061] - this is a display device hash
@@ -908,6 +1178,7 @@ namespace InGameTextEditor
                 }
             }
 
+            Debug.Log($"[Autocomplete] Alias fell through to Unknown category");
             return DeviceCategory.Unknown;
         }
 
@@ -1007,6 +1278,261 @@ namespace InGameTextEditor
             t.SetPixel(0, 0, c);
             t.Apply();
             return t;
+        }
+
+        #endregion
+
+        #region Prefab Hash Lookup
+
+        // === Prefab Hash Dictionary ===
+        // Maps PrefabHash (int) to (Title, PrefabName) for tooltip display
+        // Data extracted from assets.ic10.dev/languages/EN/devices.json and items.json
+        private static readonly Dictionary<int, (string Title, string PrefabName)> PrefabHashLookup = new Dictionary<int, (string, string)>
+        {
+            // ===== STRUCTURES / DEVICES =====
+            // IC Housing & Logic
+            { -128473777, ("IC Housing", "StructureCircuitHousing") },
+            { 1512322581, ("Kit (IC Housing)", "ItemKitLogicCircuit") },
+            { -744098481, ("Integrated Circuit (IC10)", "ItemIntegratedCircuit10") },
+            { -851746783, ("Logic Memory", "StructureLogicMemory") },
+            { 1190215887, ("Logic I/O", "StructureLogicInputOutput") },
+            { -412271893, ("Logic Switch", "StructureLogicSwitch") },
+            { 1973198065, ("Logic Dial", "StructureLogicDial") },
+            { 1220484876, ("Logic Reader", "StructureLogicReader") },
+            { -755582377, ("Logic Writer", "StructureLogicWriter") },
+            { -1613957550, ("Logic Math", "StructureLogicMath") },
+            { -1535178339, ("Logic Comparator", "StructureLogicComparator") },
+            { -1861565862, ("Logic Batch Reader", "StructureLogicBatchReader") },
+            { -1809289672, ("Logic Batch Writer", "StructureLogicBatchWriter") },
+            { -1243670210, ("Logic Transformer", "StructureLogicTransformer") },
+            { -1194586830, ("Logic Select", "StructureLogicSelect") },
+            { 1176003529, ("Logic Selector", "StructureLogicSelector") },
+            { -1123085929, ("Logic Boolean", "StructureLogicBoolean") },
+            { 1823753947, ("Batch Reader", "StructureLogicBatchReader") },
+
+            // LED Displays
+            { -815193061, ("LED Display (Small)", "StructureConsoleLED5") },
+            { -1949054743, ("LED Display (Large)", "StructureConsoleLED1x3") },
+            { 1001341323, ("Console LED", "StructureConsoleLED") },
+            { 921115029, ("Console LED Tall", "StructureConsoleLEDTall") },
+
+            // Consoles & Computers
+            { -1778700623, ("Computer", "StructureComputer") },
+            { 517275668, ("Console", "StructureConsole") },
+
+            // Gas Sensors
+            { 1717593480, ("Kit (Gas Sensor)", "ItemGasSensor") },
+            { -1252983604, ("Gas Sensor", "StructureGasSensor") },
+
+            // Vents & Air Control
+            { -842048328, ("Kit (Active Vent)", "ItemActiveVent") },
+            { 1793096320, ("Active Vent", "StructureActiveVent") },
+            { 238631271, ("Kit (Passive Vent)", "ItemPassiveVent") },
+            { -469742655, ("Passive Vent", "StructurePassiveVent") },
+            { 2015439334, ("Kit (Powered Vent)", "ItemKitPoweredVent") },
+            { 1369546270, ("Powered Vent", "StructurePoweredVent") },
+
+            // Pumps
+            { -1766301997, ("Kit (Volume Pump)", "ItemPipeVolumePump") },
+            { 1199525748, ("Volume Pump", "StructureVolumePump") },
+            { -1248429712, ("Kit (Turbo Volume Pump - Gas)", "ItemKitTurboVolumePump") },
+            { -2106280569, ("Kit (Liquid Volume Pump)", "ItemLiquidPipeVolumePump") },
+
+            // Tanks & Canisters
+            { 42280099, ("Canister", "ItemGasCanisterEmpty") },
+            { -668314371, ("Gas Canister (Smart)", "ItemGasCanisterSmart") },
+            { -185207387, ("Liquid Canister", "ItemLiquidCanisterEmpty") },
+            { 777684475, ("Liquid Canister (Smart)", "ItemLiquidCanisterSmart") },
+            { 771439840, ("Kit (Tank)", "ItemKitTank") },
+            { 1021053608, ("Kit (Insulated Tank)", "ItemKitTankInsulated") },
+
+            // Hydroponics
+            { 1441767298, ("Hydroponics Station", "StructureHydroponicsStation") },
+            { 2057179799, ("Kit (Hydroponic Station)", "ItemKitHydroponicStation") },
+            { -1193543727, ("Kit (Hydroponic Tray)", "ItemHydroponicTray") },
+            { -927931558, ("Kit (Automated Hydroponics)", "ItemKitHydroponicAutomated") },
+            { 341030083, ("Kit (Grow Light)", "ItemKitGrowLight") },
+
+            // Power
+            { -1924492105, ("Kit (Solar Panel)", "ItemKitSolarPanel") },
+            { 1406656973, ("Kit (Battery)", "ItemKitBattery") },
+            { -21225041, ("Kit (Battery Large)", "ItemKitBatteryLarge") },
+            { 377745425, ("Kit (Gas Fuel Generator)", "ItemKitGasGenerator") },
+            { 1293995736, ("Kit (Solid Generator)", "ItemKitSolidGenerator") },
+            { -453039435, ("Kit (Transformer Large)", "ItemKitTransformer") },
+            { 665194284, ("Kit (Transformer Small)", "ItemKitTransformerSmall") },
+            { 1757673317, ("Kit (Area Power Controller)", "ItemAreaPowerControl") },
+
+            // Batteries
+            { 700133157, ("Battery Cell (Small)", "ItemBatteryCell") },
+            { -459827268, ("Battery Cell (Large)", "ItemBatteryCellLarge") },
+            { 544617306, ("Battery Cell (Nuclear)", "ItemBatteryCellNuclear") },
+
+            // Fabricators
+            { -806743925, ("Kit (Furnace)", "ItemKitFurnace") },
+            { -616758353, ("Kit (Advanced Furnace)", "ItemKitAdvancedFurnace") },
+            { -98995857, ("Kit (Arc Furnace)", "ItemKitArcFurnace") },
+            { -1753893214, ("Kit (Autolathe)", "ItemKitAutolathe") },
+            { 578182956, ("Kit (Centrifuge)", "ItemKitCentrifuge") },
+
+            // Doors & Airlocks
+            { 964043875, ("Kit (Airlock)", "ItemKitAirlock") },
+            { 168615924, ("Kit (Door)", "ItemKitDoor") },
+            { -1755116240, ("Kit (Blast Door)", "ItemKitBlastDoor") },
+
+            // Walls & Structure
+            { -1826855889, ("Kit (Wall)", "ItemKitWall") },
+            { -524546923, ("Kit (Iron Wall)", "ItemKitWallIron") },
+
+            // Lights
+            { 1108423476, ("Kit (Lights)", "ItemWallLight") },
+
+            // Sensors
+            { -1776897113, ("Kit (Sensors)", "ItemKitSensor") },
+
+            // Misc Devices
+            { 890106742, ("Kit (Igniter)", "ItemIgniter") },
+            { -2107840748, ("Kit (Flashing Light)", "ItemFlashingLight") },
+
+            // Rocket Components
+            { 1396305045, ("Kit (Avionics)", "ItemKitRocketAvionics") },
+            { 721251202, ("Kit (Rocket Circuit Housing)", "ItemKitRocketCircuitHousing") },
+            { -1256996603, ("Kit (Rocket Datalink)", "ItemKitRocketDatalink") },
+            { -1629347579, ("Kit (Rocket Gas Fuel Tank)", "ItemKitRocketGasFuelTank") },
+            { 2032027950, ("Kit (Rocket Liquid Fuel Tank)", "ItemKitRocketLiquidFuelTank") },
+
+            // ===== ITEMS / INGOTS / ORES =====
+            // Ingots
+            { -404336834, ("Ingot (Copper)", "ItemCopperIngot") },
+            { -1301215609, ("Ingot (Iron)", "ItemIronIngot") },
+            { 226410516, ("Ingot (Gold)", "ItemGoldIngot") },
+            { -929742000, ("Ingot (Silver)", "ItemSilverIngot") },
+            { 2134647745, ("Ingot (Lead)", "ItemLeadIngot") },
+            { -1406385572, ("Ingot (Nickel)", "ItemNickelIngot") },
+            { -654790771, ("Ingot (Steel)", "ItemSteelIngot") },
+            { -290196476, ("Ingot (Silicon)", "ItemSiliconIngot") },
+            { 502280180, ("Ingot (Electrum)", "ItemElectrumIngot") },
+            { 1058547521, ("Ingot (Constantan)", "ItemConstantanIngot") },
+            { -82508479, ("Ingot (Solder)", "ItemSolderIngot") },
+            { -297990285, ("Ingot (Invar)", "ItemInvarIngot") },
+            { 412924554, ("Ingot (Astroloy)", "ItemAstroloyIngot") },
+            { 1579842814, ("Ingot (Hastelloy)", "ItemHastelloyIngot") },
+            { -787796599, ("Ingot (Inconel)", "ItemInconelIngot") },
+            { -1897868623, ("Ingot (Stellite)", "ItemStelliteIngot") },
+            { 156348098, ("Ingot (Waspaloy)", "ItemWaspaloyIngot") },
+
+            // Ores
+            { -707307845, ("Ore (Copper)", "ItemCopperOre") },
+            { 1758427767, ("Ore (Iron)", "ItemIronOre") },
+            { -1348105509, ("Ore (Gold)", "ItemGoldOre") },
+            { -916518678, ("Ore (Silver)", "ItemSilverOre") },
+            { -190236170, ("Ore (Lead)", "ItemLeadOre") },
+            { 1830218956, ("Ore (Nickel)", "ItemNickelOre") },
+            { 1103972403, ("Ore (Silicon)", "ItemSiliconOre") },
+            { -983091249, ("Ore (Cobalt)", "ItemCobaltOre") },
+            { 1724793494, ("Ore (Coal)", "ItemCoalOre") },
+            { -1516581844, ("Ore (Uranium)", "ItemUraniumOre") },
+
+            // Ice
+            { 1217489948, ("Ice (Water)", "ItemIce") },
+            { -1805394113, ("Ice (Oxite)", "ItemOxite") },
+            { -1499471529, ("Ice (Nitrice)", "ItemNitrice") },
+            { 1253102035, ("Ice (Volatiles)", "ItemVolatiles") },
+
+            // Gases (for filter type hashes)
+            { 632853248, ("Filter (Nitrogen)", "ItemGasFilterNitrogen") },
+            { -721824748, ("Filter (Oxygen)", "ItemGasFilterOxygen") },
+            { 1635000764, ("Filter (Carbon Dioxide)", "ItemGasFilterCarbonDioxide") },
+            { 15011598, ("Filter (Volatiles)", "ItemGasFilterVolatiles") },
+            { -1247674305, ("Filter (Nitrous Oxide)", "ItemGasFilterNitrousOxide") },
+            { 1915566057, ("Filter (Pollutant)", "ItemGasFilterPollutants") },
+            { -1993197973, ("Filter (Water)", "ItemGasFilterWater") },
+
+            // Food / Plants
+            { 1929046963, ("Potato", "ItemPotato") },
+            { -998592080, ("Tomato", "ItemTomato") },
+            { 258339687, ("Corn", "ItemCorn") },
+            { 658916791, ("Rice", "ItemRice") },
+            { 1924673028, ("Soybean", "ItemSoybean") },
+            { 1277828144, ("Pumpkin", "ItemPumpkin") },
+            { -1057658015, ("Wheat", "ItemWheat") },
+            { 2044798572, ("Mushroom", "ItemMushroom") },
+
+            // Tools
+            { 687940869, ("Screwdriver", "ItemScrewdriver") },
+            { -1886261558, ("Wrench", "ItemWrench") },
+            { 1535854074, ("Wire Cutters", "ItemWireCutters") },
+            { 856108234, ("Crowbar", "ItemCrowbar") },
+            { 2009673399, ("Hand Drill", "ItemDrill") },
+            { 201215010, ("Angle Grinder", "ItemAngleGrinder") },
+            { 1385062886, ("Arc Welder", "ItemArcWelder") },
+            { -838472102, ("Flashlight", "ItemFlashlight") },
+
+            // Mining
+            { -913649823, ("Pickaxe", "ItemPickaxe") },
+            { 1055173191, ("Mining Drill", "ItemMiningDrill") },
+            { -1663349918, ("Mining Drill (Heavy)", "ItemMiningDrillHeavy") },
+
+            // Suits & Helmets
+            { 714830451, ("Space Helmet", "ItemSpaceHelmet") },
+            { 1677018918, ("Eva Suit", "ItemEvaSuit") },
+            { -1758310454, ("Hardsuit", "ItemHardSuit") },
+            { -84573099, ("Hardsuit Helmet", "ItemHardsuitHelmet") },
+
+            // Misc
+            { -466050668, ("Cable Coil", "ItemCableCoil") },
+            { 731250882, ("Electronic Parts", "ItemElectronicParts") },
+            { 1588896491, ("Glass Sheets", "ItemGlassSheets") },
+            { -487378546, ("Iron Sheets", "ItemIronSheets") },
+            { 38555961, ("Steel Sheets", "ItemSteelSheets") },
+            { 1225836666, ("Iron Frames", "ItemIronFrames") },
+            { -1448105779, ("Steel Frames", "ItemSteelFrames") },
+        };
+
+        /// <summary>
+        /// Looks up a prefab hash and returns the display string "Title [PrefabName]"
+        /// Returns null if the hash is not found
+        /// </summary>
+        public static string LookupPrefabHash(int hash)
+        {
+            if (PrefabHashLookup.TryGetValue(hash, out var info))
+            {
+                return $"{info.Title} [{info.PrefabName}]";
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Looks up a prefab hash and returns just the Title
+        /// Returns null if the hash is not found
+        /// </summary>
+        public static string LookupPrefabHashTitle(int hash)
+        {
+            if (PrefabHashLookup.TryGetValue(hash, out var info))
+            {
+                return info.Title;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Check if a string looks like a prefab hash (negative or positive integer)
+        /// </summary>
+        public static bool TryParseHashFromWord(string word, out int hash)
+        {
+            hash = 0;
+            if (string.IsNullOrEmpty(word)) return false;
+            
+            // Check if it looks like a hash (negative number with many digits, or positive number)
+            if (word.StartsWith("-") && word.Length > 4)
+            {
+                return int.TryParse(word, out hash);
+            }
+            else if (char.IsDigit(word[0]) && word.Length > 4)
+            {
+                return int.TryParse(word, out hash);
+            }
+            return false;
         }
 
         #endregion
