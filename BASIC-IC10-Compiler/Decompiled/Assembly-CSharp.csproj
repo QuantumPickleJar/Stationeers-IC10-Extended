@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\Basic-IC10\Compiler-Extracted\BASIC IC10 Compiler for Stationeers_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Target Name="CopyJsonFiles" AfterTargets="Build">
+    <Copy SourceFiles="InGameTextEditor/DeviceLogicTypes.json" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="InGameTextEditor/LanguageData.json" DestinationFolder="$(OutputPath)" />
+  </Target>
+</Project>

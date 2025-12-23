@@ -301,13 +301,30 @@ namespace InGameTextEditor
         {
             try
             {
-                // Get path relative to Data folder
-                string dataPath = Application.dataPath;
-                string jsonPath = Path.Combine(dataPath, "Managed", "InGameTextEditor", "LanguageData.json");
-                
-                if (!File.Exists(jsonPath))
+                // Try multiple possible locations for the JSON file
+                string[] possiblePaths = new[]
                 {
-                    Debug.LogError($"LanguageData.json not found at: {jsonPath}");
+                    // Production: Game's managed directory
+                    Path.Combine(Application.dataPath, "Managed", "InGameTextEditor", "LanguageData.json"),
+                    // Development: Next to the DLL in bin output
+                    Path.Combine(Path.GetDirectoryName(typeof(DeviceAutocomplete).Assembly.Location), "LanguageData.json"),
+                    // Development alternative: InGameTextEditor folder relative to DLL
+                    Path.Combine(Path.GetDirectoryName(typeof(DeviceAutocomplete).Assembly.Location), "InGameTextEditor", "LanguageData.json")
+                };
+                
+                string jsonPath = null;
+                foreach (var path in possiblePaths)
+                {
+                    if (File.Exists(path))
+                    {
+                        jsonPath = path;
+                        break;
+                    }
+                }
+                
+                if (jsonPath == null)
+                {
+                    Debug.LogError($"LanguageData.json not found in any of the expected locations");
                     LoadFallbackLanguageData();
                     return;
                 }
@@ -343,13 +360,30 @@ namespace InGameTextEditor
         {
             try
             {
-                // Get path relative to Data folder
-                string dataPath = Application.dataPath;
-                string jsonPath = Path.Combine(dataPath, "Managed", "InGameTextEditor", "DeviceLogicTypes.json");
-                
-                if (!File.Exists(jsonPath))
+                // Try multiple possible locations for the JSON file
+                string[] possiblePaths = new[]
                 {
-                    Debug.LogError($"DeviceLogicTypes.json not found at: {jsonPath}");
+                    // Production: Game's managed directory
+                    Path.Combine(Application.dataPath, "Managed", "InGameTextEditor", "DeviceLogicTypes.json"),
+                    // Development: Next to the DLL in bin output
+                    Path.Combine(Path.GetDirectoryName(typeof(DeviceAutocomplete).Assembly.Location), "DeviceLogicTypes.json"),
+                    // Development alternative: InGameTextEditor folder relative to DLL
+                    Path.Combine(Path.GetDirectoryName(typeof(DeviceAutocomplete).Assembly.Location), "InGameTextEditor", "DeviceLogicTypes.json")
+                };
+                
+                string jsonPath = null;
+                foreach (var path in possiblePaths)
+                {
+                    if (File.Exists(path))
+                    {
+                        jsonPath = path;
+                        break;
+                    }
+                }
+                
+                if (jsonPath == null)
+                {
+                    Debug.LogError($"DeviceLogicTypes.json not found in any of the expected locations");
                     _categoryLogicTypes = GetFallbackCategoryLogicTypes();
                     return;
                 }
