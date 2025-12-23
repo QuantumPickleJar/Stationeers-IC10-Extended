@@ -1890,19 +1890,12 @@ public class TextEditor : MonoBehaviour
 			return null;
 		
 		string lineText = lines[pos.lineIndex].Text;
-		if (string.IsNullOrEmpty(lineText) || pos.characterIndex < 0 || pos.characterIndex > lineText.Length)
-			return null;
-		
-		// Find the word boundaries around the cursor position
-		int start = pos.characterIndex;
-		int end = pos.characterIndex;
-		
-		// Expand backwards to find start of word/number
-		while (start > 0 && IsHashCharacter(lineText[start - 1]))
-		{
-			start--;
-		}
-		
+	if (string.IsNullOrEmpty(lineText) || pos.colIndex < 0 || pos.colIndex > lineText.Length)
+		return null;
+	
+	// Find the word boundaries around the cursor position
+	int start = pos.colIndex;
+	int end = pos.colIndex;
 		// Expand forwards to find end of word/number
 		while (end < lineText.Length && IsHashCharacter(lineText[end]))
 		{
