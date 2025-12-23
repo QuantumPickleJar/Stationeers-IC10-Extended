@@ -79,8 +79,21 @@ namespace InGameTextEditor
             "dr8", "dr9", "dr10", "dr11", "dr12", "dr13", "dr14", "dr15"
         };
 
-        // Name patterns to infer device type
-        private static readonly Dictionary<string, DeviceCategory> NamePatterns = new Dictionary<string, DeviceCategory>(StringComparer.OrdinalIgnoreCase)
+        // Name patterns to infer device type - loaded from JSON for localization support
+        private static Dictionary<string, DeviceCategory> _namePatterns;
+        private static Dictionary<string, DeviceCategory> NamePatterns
+        {
+            get
+            {
+                if (_namePatterns == null)
+                {
+                    LoadLanguageData();
+                }
+                return _namePatterns;
+            }
+        }
+        
+        private static readonly Dictionary<string, DeviceCategory> NamePatternsFallback = new Dictionary<string, DeviceCategory>(StringComparer.OrdinalIgnoreCase)
         {
             // Gas Sensors
             { "sensor", DeviceCategory.GasSensor },
@@ -294,6 +307,8 @@ namespace InGameTextEditor
             public string[] AllSlotLogicTypes { get; set; }
             public string[] Keywords { get; set; }
             public string[] Functions { get; set; }
+            public Dictionary<string, string[]> NamePatterns { get; set; }
+            public Dictionary<string, string[]> PrefabHashLookup { get; set; }
         }
 
         // Load language-specific data from JSON file
@@ -337,7 +352,44 @@ namespace InGameTextEditor
                 _keywords = data.Keywords ?? KeywordsFallback;
                 _functions = data.Functions ?? FunctionsFallback;
                 
-                Debug.Log($"Loaded language data: {_allLogicTypes.Length} LogicTypes, {_allSlotLogicTypes.Length} SlotTypes, {_keywords.Length} Keywords, {_functions.Length} Functions");
+                // Load NamePatterns from JSON (convert from string[] to flattened dictionary)
+                if (data.NamePatterns != null)
+                {
+                    _namePatterns = new Dictionary<string, DeviceCategory>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var kvp in data.NamePatterns)
+                    {
+                        if (Enum.TryParse<DeviceCategory>(kvp.Key, out var category))
+                        {
+                            foreach (var pattern in kvp.Value)
+                            {
+                                _namePatterns[pattern] = category;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    _namePatterns = NamePatternsFallback;
+                }
+                
+                // Load PrefabHashLookup from JSON (convert string keys to int)
+                if (data.PrefabHashLookup != null)
+                {
+                    _prefabHashLookup = new Dictionary<int, (string Title, string PrefabName)>();
+                    foreach (var kvp in data.PrefabHashLookup)
+                    {
+                        if (int.TryParse(kvp.Key, out int hash) && kvp.Value.Length >= 2)
+                        {
+                            _prefabHashLookup[hash] = (kvp.Value[0], kvp.Value[1]);
+                        }
+                    }
+                }
+                else
+                {
+                    _prefabHashLookup = PrefabHashLookupFallback;
+                }
+                
+                Debug.Log($"Loaded language data: {_allLogicTypes.Length} LogicTypes, {_allSlotLogicTypes.Length} SlotTypes, {_keywords.Length} Keywords, {_functions.Length} Functions, {_namePatterns.Count} NamePatterns, {_prefabHashLookup.Count} PrefabHashes");
             }
             catch (Exception ex)
             {
@@ -353,6 +405,8 @@ namespace InGameTextEditor
             _allSlotLogicTypes = AllSlotLogicTypesFallback;
             _keywords = KeywordsFallback;
             _functions = FunctionsFallback;
+            _namePatterns = NamePatternsFallback;
+            _prefabHashLookup = PrefabHashLookupFallback;
         }
 
         // Load CategoryLogicTypes from JSON file
@@ -1485,7 +1539,21 @@ namespace InGameTextEditor
         // === Prefab Hash Dictionary ===
         // Maps PrefabHash (int) to (Title, PrefabName) for tooltip display
         // Data extracted from assets.ic10.dev/languages/EN/devices.json and items.json
-        private static readonly Dictionary<int, (string Title, string PrefabName)> PrefabHashLookup = new Dictionary<int, (string, string)>
+        // Loaded from LanguageData.json for localization support
+        private static Dictionary<int, (string Title, string PrefabName)> _prefabHashLookup;
+        private static Dictionary<int, (string Title, string PrefabName)> PrefabHashLookup
+        {
+            get
+            {
+                if (_prefabHashLookup == null)
+                {
+                    LoadLanguageData();
+                }
+                return _prefabHashLookup;
+            }
+        }
+        
+        private static readonly Dictionary<int, (string Title, string PrefabName)> PrefabHashLookupFallback = new Dictionary<int, (string, string)>
         {
             // ===== STRUCTURES / DEVICES =====
             // IC Housing & Logic
