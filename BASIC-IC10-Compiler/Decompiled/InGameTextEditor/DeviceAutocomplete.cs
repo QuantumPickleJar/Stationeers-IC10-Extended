@@ -5,8 +5,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace InGameTextEditor
@@ -167,7 +169,21 @@ namespace InGameTextEditor
 
         // === ALL LogicTypes from game's Assembly-CSharp.dll ===
         // Extracted via ILSpy from Assets.Scripts.Objects.Motherboards.LogicType
-        private static readonly string[] AllLogicTypes = new[]
+        // Loaded from LanguageData.json for localization support
+        private static string[] _allLogicTypes;
+        private static string[] AllLogicTypes
+        {
+            get
+            {
+                if (_allLogicTypes == null)
+                {
+                    LoadLanguageData();
+                }
+                return _allLogicTypes;
+            }
+        }
+
+        private static readonly string[] AllLogicTypesFallback = new[]
         {
             "None", "Power", "Open", "Mode", "Error", "Pressure", "Temperature",
             "PressureExternal", "PressureInternal", "Activate", "Lock", "Charge", "Setting",
@@ -234,7 +250,21 @@ namespace InGameTextEditor
 
         // === ALL LogicSlotTypes from game's Assembly-CSharp.dll ===
         // Extracted via ILSpy from Assets.Scripts.Objects.Motherboards.LogicSlotType
-        private static readonly string[] AllSlotLogicTypes = new[]
+        // Loaded from LanguageData.json for localization support
+        private static string[] _allSlotLogicTypes;
+        private static string[] AllSlotLogicTypes
+        {
+            get
+            {
+                if (_allSlotLogicTypes == null)
+                {
+                    LoadLanguageData();
+                }
+                return _allSlotLogicTypes;
+            }
+        }
+
+        private static readonly string[] AllSlotLogicTypesFallback = new[]
         {
             "Occupied", "OccupantHash", "Quantity", "Damage", "Efficiency", "Health", "Growth",
             "Pressure", "Temperature", "Charge", "ChargeRatio", "Class", "PressureWaste", "PressureAir",
@@ -243,10 +273,114 @@ namespace InGameTextEditor
             "SeedingRatio", "FreeSlots", "TotalSlots"
         };
 
-        // LogicTypes grouped by device category (curated for relevance)
-        private static readonly Dictionary<DeviceCategory, string[]> CategoryLogicTypes = new Dictionary<DeviceCategory, string[]>
+        // LogicTypes grouped by device category (loaded from JSON file)
+        private static Dictionary<DeviceCategory, string[]> _categoryLogicTypes;
+        private static Dictionary<DeviceCategory, string[]> CategoryLogicTypes
         {
-            { DeviceCategory.GasSensor, new[] {
+            get
+            {
+                if (_categoryLogicTypes == null)
+                {
+                    LoadCategoryLogicTypesFromJson();
+                }
+                return _categoryLogicTypes;
+            }
+        }
+
+        // Helper class for deserializing LanguageData.json
+        private class LanguageDataJson
+        {
+            public string[] AllLogicTypes { get; set; }
+            public string[] AllSlotLogicTypes { get; set; }
+            public string[] Keywords { get; set; }
+            public string[] Functions { get; set; }
+        }
+
+        // Load language-specific data from JSON file
+        private static void LoadLanguageData()
+        {
+            try
+            {
+                // Get path relative to Data folder
+                string dataPath = Application.dataPath;
+                string jsonPath = Path.Combine(dataPath, "Managed", "InGameTextEditor", "LanguageData.json");
+                
+                if (!File.Exists(jsonPath))
+                {
+                    Debug.LogError($"LanguageData.json not found at: {jsonPath}");
+                    LoadFallbackLanguageData();
+                    return;
+                }
+                
+                string jsonContent = File.ReadAllText(jsonPath);
+                var data = JsonConvert.DeserializeObject<LanguageDataJson>(jsonContent);
+                
+                _allLogicTypes = data.AllLogicTypes ?? AllLogicTypesFallback;
+                _allSlotLogicTypes = data.AllSlotLogicTypes ?? AllSlotLogicTypesFallback;
+                _keywords = data.Keywords ?? KeywordsFallback;
+                _functions = data.Functions ?? FunctionsFallback;
+                
+                Debug.Log($"Loaded language data: {_allLogicTypes.Length} LogicTypes, {_allSlotLogicTypes.Length} SlotTypes, {_keywords.Length} Keywords, {_functions.Length} Functions");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error loading LanguageData.json: {ex.Message}");
+                LoadFallbackLanguageData();
+            }
+        }
+
+        // Load fallback data if JSON fails
+        private static void LoadFallbackLanguageData()
+        {
+            _allLogicTypes = AllLogicTypesFallback;
+            _allSlotLogicTypes = AllSlotLogicTypesFallback;
+            _keywords = KeywordsFallback;
+            _functions = FunctionsFallback;
+        }
+
+        // Load CategoryLogicTypes from JSON file
+        private static void LoadCategoryLogicTypesFromJson()
+        {
+            try
+            {
+                // Get path relative to Data folder
+                string dataPath = Application.dataPath;
+                string jsonPath = Path.Combine(dataPath, "Managed", "InGameTextEditor", "DeviceLogicTypes.json");
+                
+                if (!File.Exists(jsonPath))
+                {
+                    Debug.LogError($"DeviceLogicTypes.json not found at: {jsonPath}");
+                    _categoryLogicTypes = GetFallbackCategoryLogicTypes();
+                    return;
+                }
+                
+                string jsonContent = File.ReadAllText(jsonPath);
+                var jsonDict = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(jsonContent);
+                
+                _categoryLogicTypes = new Dictionary<DeviceCategory, string[]>();
+                foreach (var kvp in jsonDict)
+                {
+                    if (Enum.TryParse<DeviceCategory>(kvp.Key, out var category))
+                    {
+                        _categoryLogicTypes[category] = kvp.Value;
+                    }
+                }
+                
+                Debug.Log($"Loaded {_categoryLogicTypes.Count} device categories from DeviceLogicTypes.json");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error loading DeviceLogicTypes.json: {ex.Message}");
+                _categoryLogicTypes = GetFallbackCategoryLogicTypes();
+            }
+        }
+
+        // Fallback data in case JSON fails to load
+        private static Dictionary<DeviceCategory, string[]> GetFallbackCategoryLogicTypes()
+        {
+            return new Dictionary<DeviceCategory, string[]>
+            {
+                { DeviceCategory.GasSensor, new[] {
                 // Common
                 "Activate", "Error", "Lock", "Mode", "On", "Power", "PowerActual", "PowerRequired",
                 "PrefabHash", "ReferenceId", "RequiredPower",
@@ -525,10 +659,25 @@ namespace InGameTextEditor
                 "VelocityZ", "Vertical", "VerticalRatio", "Volume", "VolumeOfLiquid", "WattsReachingContact",
                 "Weight", "WorkingGasEfficiency", "Harvest"
             }}
-        };
+            };
+        }
 
         // BASIC IC10 Keywords
-        private static readonly string[] Keywords = new[]
+        // Loaded from LanguageData.json for localization support
+        private static string[] _keywords;
+        private static string[] Keywords
+        {
+            get
+            {
+                if (_keywords == null)
+                {
+                    LoadLanguageData();
+                }
+                return _keywords;
+            }
+        }
+
+        private static readonly string[] KeywordsFallback = new[]
         {
             "If", "Then", "Else", "ElseIf", "EndIf",
             "While", "EndWhile",
@@ -544,7 +693,21 @@ namespace InGameTextEditor
         };
 
         // BASIC IC10 Built-in Functions
-        private static readonly string[] Functions = new[]
+        // Loaded from LanguageData.json for localization support
+        private static string[] _functions;
+        private static string[] Functions
+        {
+            get
+            {
+                if (_functions == null)
+                {
+                    LoadLanguageData();
+                }
+                return _functions;
+            }
+        }
+
+        private static readonly string[] FunctionsFallback = new[]
         {
             // Math
             "Abs", "Ceil", "Floor", "Round", "Trunc",
@@ -634,7 +797,7 @@ namespace InGameTextEditor
 
             _mode = AutocompleteMode.Property;
             _currentFilter = "";
-            _filteredItems = logicTypes.OrderBy(x => x).ToList();
+            _filteredItems = logicTypes.Distinct().OrderBy(x => x).ToList();
             _selectedIndex = 0;
             _scrollPosition = Vector2.zero;
             _popupPosition = CalculatePosition(editor);
@@ -756,6 +919,7 @@ namespace InGameTextEditor
                 var logicTypes = CategoryLogicTypes.TryGetValue(_currentCategory, out var types) ? types : CategoryLogicTypes[DeviceCategory.Unknown];
                 
                 _filteredItems = logicTypes
+                    .Distinct()
                     .Where(x => x.StartsWith(_currentFilter, StringComparison.OrdinalIgnoreCase))
                     .OrderBy(x => x)
                     .ToList();
