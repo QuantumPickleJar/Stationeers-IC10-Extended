@@ -18,10 +18,10 @@
     "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting"
   ],
   "Vent": [
-    "Activate", "AirRelease", "Error", "Lock", "Mode", "On", "Open", "Power",
+    "Activate", "AirRelease", "Error", "Lock", "Maximum", "Minimum", "Mode", "On", "Open", "Power",
     "PowerActual", "PowerRequired", "PrefabHash", "Pressure", "PressureExternal",
     "PressureInternal", "PressureSetting", "ReferenceId", "RequiredPower", "Setting",
-    "Temperature", "TemperatureExternal", "TemperatureSetting"
+    "Temperature", "TemperatureExternal", "TemperatureInternal", "TemperatureSetting"
   ],
   "Pump": [
     "Activate", "Error", "Filtration", "Lock", "Mode", "On", "Power", "PowerActual",

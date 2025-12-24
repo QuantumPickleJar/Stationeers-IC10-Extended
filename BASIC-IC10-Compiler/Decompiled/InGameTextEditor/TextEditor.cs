@@ -3,14 +3,43 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
-using InGameTextEditor.Format;
-using InGameTextEditor.History;
-using InGameTextEditor.Operations;
+// using InGameTextEditor.Format;  // Missing file
+// using InGameTextEditor.History;  // Missing file
+// using InGameTextEditor.Operations;  // Missing file
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace InGameTextEditor;
+
+// Stub classes for missing dependencies
+public class Line { }
+public class TextPosition { public int lineIndex; public int colIndex; }
+public class Selection { }
+public class State { }
+public interface IOperation { }
+public class MoveCaretOperation : IOperation { }
+public class SetTextOperation : IOperation { }
+public class InsertTextOperation : IOperation { }
+public class InsertCharacterOperation : IOperation { }
+public class DeleteTextOperation : IOperation { }
+public class DeleteOperation : IOperation { }
+public class ModifyIndentOperation : IOperation { }
+public class RebuildLinesOperation : IOperation { }
+public class PlaceCaretOperation : IOperation { }
+public class SetSelectionOperation : IOperation { }
+public class SelectAllOperation : IOperation { }
+public class CopyOperation : IOperation { }
+public class CutOperation : IOperation { }
+public class PasteOperation : IOperation { }
+public class UndoOperation : IOperation { }
+public class RedoOperation : IOperation { }
+public class FindOperation : IOperation { }
+
+namespace History
+{
+    public class CommandHistory { }
+}
 
 [ExecuteInEditMode]
 public class TextEditor : MonoBehaviour
