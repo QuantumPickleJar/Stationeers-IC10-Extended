@@ -10,21 +10,35 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace InGameTextEditor;
+namespace InGameTextEditor
+{
 
 // Stub classes for missing dependencies
-public class Line { }
+public class Line { public string Text { get; set; } }
 public class TextPosition { public int lineIndex; public int colIndex; }
 public class Selection { }
 public class State { }
 public interface IOperation { }
-public class MoveCaretOperation : IOperation { }
+public class MoveCaretOperation : IOperation 
+{ 
+    public enum Direction { Up, Down, Left, Right }
+    public MoveCaretOperation(Direction d) { }
+}
 public class SetTextOperation : IOperation { }
 public class InsertTextOperation : IOperation { }
-public class InsertCharacterOperation : IOperation { }
+public class InsertCharacterOperation : IOperation 
+{ 
+    public InsertCharacterOperation(char c) { }
+}
 public class DeleteTextOperation : IOperation { }
-public class DeleteOperation : IOperation { }
-public class ModifyIndentOperation : IOperation { }
+public class DeleteOperation : IOperation 
+{ 
+    public DeleteOperation(bool forward) { }
+}
+public class ModifyIndentOperation : IOperation 
+{ 
+    public ModifyIndentOperation(bool increase) { }
+}
 public class RebuildLinesOperation : IOperation { }
 public class PlaceCaretOperation : IOperation { }
 public class SetSelectionOperation : IOperation { }
@@ -39,6 +53,7 @@ public class FindOperation : IOperation { }
 namespace History
 {
     public class CommandHistory { }
+    public class Event { }
 }
 
 [ExecuteInEditMode]
@@ -831,6 +846,17 @@ public class TextEditor : MonoBehaviour
 
 	private void Update()
 	{
+		// Ctrl+Space to trigger manual autocomplete (check first, highest priority)
+		bool ctrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+		if (Util.IsMacOS())
+			ctrlHeld = Input.GetKey(KeyCode.LeftMeta) || Input.GetKey(KeyCode.RightMeta);
+		
+		if (ctrlHeld && Input.GetKeyDown(KeyCode.Space) && editorActive)
+		{
+			TriggerManualAutocomplete();
+			return;  // Don't process anything else this frame
+		}
+
 		// Handle autocomplete keyboard navigation
 		if (_autocompleteActive && DeviceAutocomplete.Instance.IsVisible)
 		{
@@ -1169,6 +1195,14 @@ public class TextEditor : MonoBehaviour
 				keyRepeatTime = 0f;
 				HandleKeyStroke(keyHold);
 			}
+			if (Input.GetKeyDown(KeyCode.Space))
+			{
+				keyHold = KeyCode.Space;
+				keyHoldDown = false;
+				keyHoldTime = Time.time;
+				keyRepeatTime = 0f;
+				HandleKeyStroke(keyHold);
+			}
 			if (Input.GetKeyDown(KeyCode.Tab))
 			{
 				keyHold = KeyCode.Tab;
@@ -1405,6 +1439,10 @@ public class TextEditor : MonoBehaviour
 		}
 		switch (keyCode)
 		{
+		case KeyCode.Space:
+			// Ctrl+Space triggers autocomplete
+			TriggerManualAutocomplete();
+			break;
 		case KeyCode.C:
 			Copy();
 			break;
@@ -1641,6 +1679,185 @@ public class TextEditor : MonoBehaviour
 			{
 				_autocompleteActive = true;
 				_autocompletePartial = currentWord;
+			}
+		}
+	}
+
+	/// <summary>
+	/// Manually trigger autocomplete (Ctrl+Space) - intelligently detect context.
+	/// </summary>
+	private void TriggerManualAutocomplete()
+	{
+		// First, dismiss any existing autocomplete
+		if (_autocompleteActive)
+		{
+			_autocompleteActive = false;
+			DeviceAutocomplete.Instance.Hide();
+		}
+
+		if (lines.Count == 0 || caretTextPosition == null)
+		{
+			// Fallback: show all identifiers
+			if (DeviceAutocomplete.Instance.ForceShowAllIdentifiers(this, ""))
+			{
+				_autocompleteActive = true;
+				_autocompletePartial = "";
+			}
+			return;
+		}
+
+		int lineIdx = caretTextPosition.lineIndex;
+		int colIdx = caretTextPosition.colIndex;
+
+		if (lineIdx >= lines.Count)
+		{
+			// Fallback: show all identifiers
+			if (DeviceAutocomplete.Instance.ForceShowAllIdentifiers(this, ""))
+			{
+				_autocompleteActive = true;
+				_autocompletePartial = "";
+			}
+			return;
+		}
+
+		string lineText = lines[lineIdx].Text;
+		if (string.IsNullOrEmpty(lineText) || colIdx <= 0)
+		{
+			// Empty line or at start - show all identifiers
+			if (DeviceAutocomplete.Instance.ForceShowAllIdentifiers(this, ""))
+			{
+				_autocompleteActive = true;
+				_autocompletePartial = "";
+			}
+			return;
+		}
+
+		// Get current word being typed (if any)
+		string currentWord = GetCurrentWordAtCaret();
+		
+		// Look backwards from the start of current word to find context
+		int wordStart = Mathf.Min(colIdx, lineText.Length) - currentWord.Length;
+		int searchPos = wordStart - 1;
+		
+		// Skip whitespace before current word
+		while (searchPos >= 0 && char.IsWhiteSpace(lineText[searchPos]))
+			searchPos--;
+
+		if (searchPos < 0)
+		{
+			// No context before - just trigger identifier autocomplete
+			if (!string.IsNullOrEmpty(currentWord))
+			{
+				if (DeviceAutocomplete.Instance.TryTriggerIdentifier(this, currentWord))
+				{
+					_autocompleteActive = true;
+					_autocompletePartial = currentWord;
+				}
+			}
+			return;
+		}
+
+		// Check if we're typing after a dot (property autocomplete with filter)
+		if (lineText[searchPos] == '.')
+		{
+			// Find the token before the dot
+			int dotPos = searchPos;
+			searchPos--;
+			
+			// Skip whitespace before dot
+			while (searchPos >= 0 && char.IsWhiteSpace(lineText[searchPos]))
+				searchPos--;
+
+			if (searchPos < 0)
+				return;
+
+			// Check for Slots[n] pattern
+			if (lineText[searchPos] == ']')
+			{
+				// Could be Slots[n]. - extract the full pattern
+				int bracketDepth = 1;
+				searchPos--;
+				
+				while (searchPos >= 0 && bracketDepth > 0)
+				{
+					if (lineText[searchPos] == ']') bracketDepth++;
+					if (lineText[searchPos] == '[') bracketDepth--;
+					searchPos--;
+				}
+				
+				if (bracketDepth == 0)
+				{
+					// Found matching bracket, get the full expression
+					string textBeforeDot = lineText.Substring(0, dotPos).Trim();
+					if (DeviceAutocomplete.Instance.TryTriggerSlotProperty(this, textBeforeDot))
+					{
+						_autocompleteActive = true;
+						_autocompletePartial = currentWord;
+						if (!string.IsNullOrEmpty(currentWord))
+						{
+							DeviceAutocomplete.Instance.UpdateFilter(currentWord);
+						}
+						return;
+					}
+				}
+			}
+
+			// Regular property autocomplete
+			int tokenEnd = searchPos + 1;
+			int tokenStart = tokenEnd - 1;
+			
+			while (tokenStart >= 0 && IsIdentifierChar(lineText[tokenStart]))
+				tokenStart--;
+			
+			tokenStart++;
+			
+			if (tokenStart < tokenEnd)
+			{
+				string tokenBefore = lineText.Substring(tokenStart, tokenEnd - tokenStart);
+				if (DeviceAutocomplete.Instance.TryTrigger(this, tokenBefore))
+				{
+					_autocompleteActive = true;
+					_autocompletePartial = currentWord;
+					if (!string.IsNullOrEmpty(currentWord))
+					{
+						DeviceAutocomplete.Instance.UpdateFilter(currentWord);
+					}
+					return;
+				}
+				// Fallback: show all properties if alias not recognized
+				if (DeviceAutocomplete.Instance.ForceShowAllProperties(this, currentWord))
+				{
+					_autocompleteActive = true;
+					_autocompletePartial = currentWord;
+					return;
+				}
+			}
+			// Even if no token before dot, show all properties
+			if (DeviceAutocomplete.Instance.ForceShowAllProperties(this, currentWord))
+			{
+				_autocompleteActive = true;
+				_autocompletePartial = currentWord;
+				return;
+			}
+		}
+		else if (!string.IsNullOrEmpty(currentWord))
+		{
+			// Not after a dot - trigger identifier autocomplete
+			if (DeviceAutocomplete.Instance.TryTriggerIdentifier(this, currentWord))
+			{
+				_autocompleteActive = true;
+				_autocompletePartial = currentWord;
+				return;
+			}
+		}
+		
+		// Fallback: if nothing matched, show all identifiers
+		if (!_autocompleteActive)
+		{
+			if (DeviceAutocomplete.Instance.ForceShowAllIdentifiers(this, currentWord ?? ""))
+			{
+				_autocompleteActive = true;
+				_autocompletePartial = currentWord ?? "";
 			}
 		}
 	}
@@ -3265,3 +3482,5 @@ public class TextEditor : MonoBehaviour
 		}
 	}
 }
+
+} // end namespace InGameTextEditor

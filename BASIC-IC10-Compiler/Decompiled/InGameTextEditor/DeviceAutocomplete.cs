@@ -35,7 +35,8 @@ namespace InGameTextEditor
     {
         None,
         Property,    // After '.' - device properties
-        Identifier   // While typing - variables, keywords, etc.
+        Identifier,  // While typing - variables, keywords, etc.
+        SlotProperty // After 'Slots[n].' - slot-specific properties
     }
 
     public enum IdentifierKind
@@ -856,6 +857,7 @@ namespace InGameTextEditor
         #region Public API
 
         public bool IsVisible => _isVisible;
+        public AutocompleteMode CurrentMode => _mode;
 
         public bool TryTrigger(TextEditor editor, string tokenBeforeDot)
         {
@@ -886,6 +888,117 @@ namespace InGameTextEditor
             _mode = AutocompleteMode.Property;
             _currentFilter = "";
             _filteredItems = logicTypes.Distinct().OrderBy(x => x).ToList();
+            _selectedIndex = 0;
+            _scrollPosition = Vector2.zero;
+            _popupPosition = CalculatePosition(editor);
+            _isVisible = true;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Force show property autocomplete with all LogicTypes.
+        /// Used for manual Ctrl+Space trigger when alias isn't recognized.
+        /// </summary>
+        public bool ForceShowAllProperties(TextEditor editor, string filterPrefix = "")
+        {
+            // Don't trigger autocomplete inside comments
+            if (IsInComment(editor))
+                return false;
+
+            // Get all LogicTypes from Unknown category (contains everything)
+            var logicTypes = CategoryLogicTypes.TryGetValue(DeviceCategory.Unknown, out var types) ? types : AllLogicTypes.ToArray();
+
+            _mode = AutocompleteMode.Property;
+            _currentCategory = DeviceCategory.Unknown;
+            _currentFilter = filterPrefix ?? "";
+            
+            _filteredItems = logicTypes
+                .Distinct()
+                .Where(x => string.IsNullOrEmpty(_currentFilter) || x.StartsWith(_currentFilter, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(x => x)
+                .ToList();
+            
+            if (_filteredItems.Count == 0)
+                return false;
+
+            _selectedIndex = 0;
+            _scrollPosition = Vector2.zero;
+            _popupPosition = CalculatePosition(editor);
+            _isVisible = true;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Force show identifier autocomplete with all keywords and functions.
+        /// Used for manual Ctrl+Space trigger when there's no context.
+        /// </summary>
+        public bool ForceShowAllIdentifiers(TextEditor editor, string filterPrefix = "")
+        {
+            // Don't trigger autocomplete inside comments
+            if (IsInComment(editor))
+                return false;
+
+            // Parse document for identifiers
+            ParseDocument(editor.Text);
+
+            // Build candidate list
+            _identifierItems.Clear();
+            _typingPrefix = filterPrefix ?? "";
+
+            // Add all user variables
+            foreach (var v in _userVariables)
+            {
+                if (string.IsNullOrEmpty(filterPrefix) || v.StartsWith(filterPrefix, StringComparison.OrdinalIgnoreCase))
+                    _identifierItems.Add(new AutocompleteItem(v, IdentifierKind.Variable));
+            }
+
+            // Add all user aliases
+            foreach (var a in _userAliases)
+            {
+                if (string.IsNullOrEmpty(filterPrefix) || a.StartsWith(filterPrefix, StringComparison.OrdinalIgnoreCase))
+                    _identifierItems.Add(new AutocompleteItem(a, IdentifierKind.Alias));
+            }
+
+            // Add all constants
+            foreach (var c in _userConstants)
+            {
+                if (string.IsNullOrEmpty(filterPrefix) || c.StartsWith(filterPrefix, StringComparison.OrdinalIgnoreCase))
+                    _identifierItems.Add(new AutocompleteItem(c, IdentifierKind.Constant));
+            }
+
+            // Add all labels
+            foreach (var l in _userLabels)
+            {
+                if (string.IsNullOrEmpty(filterPrefix) || l.StartsWith(filterPrefix, StringComparison.OrdinalIgnoreCase))
+                    _identifierItems.Add(new AutocompleteItem(l, IdentifierKind.Label));
+            }
+
+            // Add all keywords
+            foreach (var kw in Keywords)
+            {
+                if (string.IsNullOrEmpty(filterPrefix) || kw.StartsWith(filterPrefix, StringComparison.OrdinalIgnoreCase))
+                    _identifierItems.Add(new AutocompleteItem(kw, IdentifierKind.Keyword));
+            }
+
+            // Add all functions
+            foreach (var fn in Functions)
+            {
+                if (string.IsNullOrEmpty(filterPrefix) || fn.StartsWith(filterPrefix, StringComparison.OrdinalIgnoreCase))
+                    _identifierItems.Add(new AutocompleteItem(fn, IdentifierKind.Function));
+            }
+
+            if (_identifierItems.Count == 0)
+                return false;
+
+            // Sort by kind priority then alphabetically
+            _identifierItems = _identifierItems
+                .OrderBy(x => GetKindPriority(x.Kind))
+                .ThenBy(x => x.Text, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            _mode = AutocompleteMode.Identifier;
             _selectedIndex = 0;
             _scrollPosition = Vector2.zero;
             _popupPosition = CalculatePosition(editor);
@@ -997,6 +1110,52 @@ namespace InGameTextEditor
             }
         }
 
+        /// <summary>
+        /// Try to trigger slot property autocomplete after 'Slots[n].'
+        /// Returns true if autocomplete was activated.
+        /// </summary>
+        public bool TryTriggerSlotProperty(TextEditor editor, string textBeforeDot)
+        {
+            if (string.IsNullOrEmpty(textBeforeDot))
+                return false;
+
+            // Don't trigger autocomplete inside comments
+            if (IsInComment(editor))
+                return false;
+
+            // Check if the text ends with Slots[n] pattern
+            // Examples: "alias.Slots[0]", "device.Slots[2]", "d0.Slots[1]"
+            var slotMatch = Regex.Match(textBeforeDot, @"(\w+)\.Slots\[(\d+)\]$", RegexOptions.IgnoreCase);
+            if (!slotMatch.Success)
+                return false;
+
+            string deviceToken = slotMatch.Groups[1].Value;
+            string slotIndex = slotMatch.Groups[2].Value;
+
+            // Skip raw device refs
+            if (RawDeviceRefs.Contains(deviceToken))
+                return false;
+
+            // Parse document to verify the device exists
+            ParseDocument(editor.Text);
+
+            if (!_userAliases.Contains(deviceToken))
+                return false;
+
+            Debug.Log($"[Autocomplete] Slot property trigger for '{deviceToken}.Slots[{slotIndex}]'");
+
+            // Show all slot logic types
+            _mode = AutocompleteMode.SlotProperty;
+            _currentFilter = "";
+            _filteredItems = AllSlotLogicTypes.Distinct().OrderBy(x => x).ToList();
+            _selectedIndex = 0;
+            _scrollPosition = Vector2.zero;
+            _popupPosition = CalculatePosition(editor);
+            _isVisible = true;
+
+            return true;
+        }
+
         public void UpdateFilter(string partial)
         {
             if (!_isVisible) return;
@@ -1007,6 +1166,20 @@ namespace InGameTextEditor
                 var logicTypes = CategoryLogicTypes.TryGetValue(_currentCategory, out var types) ? types : CategoryLogicTypes[DeviceCategory.Unknown];
                 
                 _filteredItems = logicTypes
+                    .Distinct()
+                    .Where(x => x.StartsWith(_currentFilter, StringComparison.OrdinalIgnoreCase))
+                    .OrderBy(x => x)
+                    .ToList();
+                _selectedIndex = 0;
+
+                if (_filteredItems.Count == 0)
+                    Hide();
+            }
+            else if (_mode == AutocompleteMode.SlotProperty)
+            {
+                _currentFilter = partial ?? "";
+                
+                _filteredItems = AllSlotLogicTypes
                     .Distinct()
                     .Where(x => x.StartsWith(_currentFilter, StringComparison.OrdinalIgnoreCase))
                     .OrderBy(x => x)
@@ -1117,8 +1290,6 @@ namespace InGameTextEditor
             }
         }
 
-        public AutocompleteMode CurrentMode => _mode;
-
         public void Hide()
         {
             _isVisible = false;
@@ -1134,6 +1305,8 @@ namespace InGameTextEditor
 
             if (_mode == AutocompleteMode.Property)
                 DrawPropertyPopup();
+            else if (_mode == AutocompleteMode.SlotProperty)
+                DrawSlotPropertyPopup();
             else if (_mode == AutocompleteMode.Identifier)
                 DrawIdentifierPopup();
         }
@@ -1157,6 +1330,49 @@ namespace InGameTextEditor
             Rect headerRect = new Rect(popupRect.x + 5, popupRect.y + 3, PopupWidth - 10, headerHeight - 2);
             string categoryName = _currentCategory == DeviceCategory.Unknown ? "Device" : _currentCategory.ToString();
             GUI.Label(headerRect, $"[{categoryName}]", _categoryStyle);
+
+            // Scroll view for items
+            Rect viewRect = new Rect(0, 0, PopupWidth - 20, _filteredItems.Count * ItemHeight);
+            Rect scrollRect = new Rect(popupRect.x + 3, popupRect.y + headerHeight + 3, PopupWidth - 6, height - headerHeight - 6);
+
+            _scrollPosition = GUI.BeginScrollView(scrollRect, _scrollPosition, viewRect, false, _filteredItems.Count > MaxVisible);
+
+            for (int i = 0; i < _filteredItems.Count; i++)
+            {
+                Rect itemRect = new Rect(0, i * ItemHeight, viewRect.width, ItemHeight);
+                bool selected = (i == _selectedIndex);
+
+                GUI.Box(itemRect, "", selected ? _selectedStyle : _itemStyle);
+                GUI.Label(itemRect, "  " + _filteredItems[i], selected ? _selectedStyle : _itemStyle);
+
+                if (Event.current.type == EventType.MouseDown && itemRect.Contains(Event.current.mousePosition))
+                {
+                    _selectedIndex = i;
+                    Event.current.Use();
+                }
+            }
+
+            GUI.EndScrollView();
+        }
+
+        private void DrawSlotPropertyPopup()
+        {
+            if (_filteredItems.Count == 0)
+                return;
+
+            InitStyles();
+
+            int visibleCount = Mathf.Min(_filteredItems.Count, MaxVisible);
+            float headerHeight = 22f;
+            float height = visibleCount * ItemHeight + headerHeight + 8;
+            Rect popupRect = new Rect(_popupPosition.x, _popupPosition.y, PopupWidth, height);
+
+            // Background
+            GUI.Box(popupRect, "", _boxStyle);
+
+            // Header showing slot properties
+            Rect headerRect = new Rect(popupRect.x + 5, popupRect.y + 3, PopupWidth - 10, headerHeight - 2);
+            GUI.Label(headerRect, "[Slot Properties]", _categoryStyle);
 
             // Scroll view for items
             Rect viewRect = new Rect(0, 0, PopupWidth - 20, _filteredItems.Count * ItemHeight);

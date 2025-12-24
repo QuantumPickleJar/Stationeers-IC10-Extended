@@ -1,7 +1,7 @@
 {
   "GasSensor": [
     "Activate", "Error", "Lock", "Mode", "On", "Power", "PowerActual", "PowerRequired",
-    "PrefabHash", "ReferenceId", "RequiredPower",
+    "PrefabHash", "ReferenceId", "RequiredPower", "Slots",
     "Pressure", "Temperature", "TotalMoles", "Volume",
     "RatioCarbonDioxide", "RatioNitrogen", "RatioNitrousOxide", "RatioOxygen",
     "RatioPollutant", "RatioVolatiles", "RatioWater", "RatioHydrogen",
@@ -11,16 +11,16 @@
   ],
   "Display": [
     "Activate", "Color", "Error", "Lock", "Mode", "On", "Power", "PowerActual",
-    "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting"
+    "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting", "Slots"
   ],
   "Light": [
     "Activate", "Color", "Error", "Lock", "Mode", "On", "Power", "PowerActual",
-    "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting"
+    "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting", "Slots"
   ],
   "Vent": [
     "Activate", "AirRelease", "Error", "Lock", "Maximum", "Minimum", "Mode", "On", "Open", "Power",
     "PowerActual", "PowerRequired", "PrefabHash", "Pressure", "PressureExternal",
-    "PressureInternal", "PressureSetting", "ReferenceId", "RequiredPower", "Setting",
+    "PressureInternal", "PressureSetting", "ReferenceId", "RequiredPower", "Setting", "Slots",
     "Temperature", "TemperatureExternal", "TemperatureInternal", "TemperatureSetting"
   ],
   "Pump": [
@@ -47,7 +47,7 @@
     "RatioLiquidOxygenInput", "RatioLiquidPollutantInput", "RatioLiquidVolatilesInput",
     "RatioLiquidCarbonDioxideOutput", "RatioLiquidNitrogenOutput", "RatioLiquidNitrousOxideOutput",
     "RatioLiquidOxygenOutput", "RatioLiquidPollutantOutput", "RatioLiquidVolatilesOutput",
-    "RatioSteam", "RatioSteamInput", "RatioSteamOutput", "VolumeOfLiquid",
+    "RatioSteam", "RatioSteamInput", "RatioSteamOutput", "Slots", "VolumeOfLiquid",
     "EnvironmentEfficiency", "WorkingGasEfficiency", "OperationalTemperatureEfficiency",
     "TemperatureDifferentialEfficiency", "PressureEfficiency"
   ],
@@ -62,7 +62,7 @@
     "Charge", "ChargeRatio", "Class", "Damage", "Efficiency", "FilterType", "FreeSlots",
     "Growth", "HarvestedHash", "Health", "Mature", "MaturityRatio", "MaxQuantity",
     "OccupantHash", "Occupied", "Open", "Quantity", "Seeding", "SeedingRatio",
-    "SortingClass", "TotalSlots", "Volume"
+    "Slots", "SortingClass", "TotalSlots", "Volume"
   ],
   "Logic": [
     "Activate", "Error", "Lock", "Mode", "On", "Power", "PowerActual", "PowerRequired",
@@ -72,7 +72,7 @@
     "SettingInput", "SettingOutput",
     "Minimum", "Maximum",
     "ProportionalGain", "IntegralGain", "DerivativeGain", "Setpoint", "Reset",
-    "SignalID", "SignalStrength"
+    "SignalID", "SignalStrength", "Slots"
   ],
   "Power": [
     "Activate", "Charge", "Error", "Lock", "Mode", "On", "Power", "PowerActual",
@@ -81,7 +81,7 @@
     "Horizontal", "HorizontalRatio", "SolarAngle", "SolarIrradiance", "Vertical", "VerticalRatio",
     "Maximum",
     "Combustion", "CombustionInput", "CombustionInput2", "CombustionOutput", "CombustionOutput2",
-    "CombustionLimiter", "Fuel", "Rpm", "Throttle",
+    "CombustionLimiter", "Fuel", "Rpm", "Slots", "Throttle",
     "EnvironmentEfficiency", "OperationalTemperatureEfficiency", "TemperatureDifferentialEfficiency",
     "NetworkFault"
   ],
@@ -96,11 +96,11 @@
     "Pressure", "PressureInput", "PressureOutput", "PressureSetting",
     "EnvironmentEfficiency", "OperationalTemperatureEfficiency",
     "Charge", "ChargeRatio", "Class", "Damage", "FreeSlots", "MaxQuantity",
-    "OccupantHash", "Occupied", "SortingClass", "TotalSlots"
+    "OccupantHash", "Occupied", "Slots", "SortingClass", "TotalSlots"
   ],
   "Door": [
     "Activate", "Error", "Lock", "Mode", "On", "Open", "Power", "PowerActual",
-    "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting"
+    "PowerRequired", "PrefabHash", "ReferenceId", "RequiredPower", "Setting", "Slots"
   ],
   "Console": [
     "Activate", "Color", "Error", "Lock", "Mode", "On", "Power", "PowerActual",
@@ -114,7 +114,7 @@
     "AlignmentError", "CelestialHash", "CelestialParentHash", "Chart", "ChartedNavPoints",
     "CurrentCode", "Density", "DestinationCode", "Discover", "DistanceAu", "DistanceKm",
     "Eccentricity", "Inclination", "MinedQuantity", "NavPoints", "OrbitPeriod", "Richness",
-    "SemiMajorAxis", "Sites", "Size", "Survey", "TotalQuantity", "TrueAnomaly"
+    "SemiMajorAxis", "Sites", "Size", "Slots", "Survey", "TotalQuantity", "TrueAnomaly"
   ],
   "Tank": [
     "Activate", "Error", "Lock", "On", "PrefabHash", "ReferenceId",
@@ -123,7 +123,7 @@
     "RatioOxygen", "RatioPollutant", "RatioVolatiles", "RatioWater",
     "RatioLiquidCarbonDioxide", "RatioLiquidHydrogen", "RatioLiquidNitrogen",
     "RatioLiquidNitrousOxide", "RatioLiquidOxygen", "RatioLiquidPollutant",
-    "RatioLiquidVolatiles", "RatioPollutedWater", "RatioSteam", "VolumeOfLiquid"
+    "RatioLiquidVolatiles", "RatioPollutedWater", "RatioSteam", "Slots", "VolumeOfLiquid"
   ],
   "Rocket": [
     "Activate", "Error", "Lock", "Mode", "On", "Power", "PowerActual", "PowerRequired",
@@ -140,7 +140,7 @@
     "ThrustToWeight", "Vertical", "VerticalRatio", "Weight",
     "AutoShutOff", "DrillCondition", "EntityState", "Extended", "Index",
     "CelestialHash", "CelestialParentHash", "DistanceAu", "DistanceKm",
-    "Eccentricity", "Inclination", "OrbitPeriod", "SemiMajorAxis", "TrueAnomaly"
+    "Eccentricity", "Inclination", "OrbitPeriod", "SemiMajorAxis", "Slots", "TrueAnomaly"
   ],
   "Unknown": [
     "Acceleration", "Activate", "AirRelease", "AlignmentError", "Altitude", "Apex",
